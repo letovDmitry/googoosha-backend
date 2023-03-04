@@ -1,7 +1,11 @@
-import { Controller, Post, Body, HttpCode } from "@nestjs/common";
+import { Controller, Post, Body, HttpCode, UseInterceptors, UploadedFile, Res, Get } from "@nestjs/common";
 import { HttpStatus } from "@nestjs/common/enums";
+import { FileInterceptor } from "@nestjs/platform-express/multer";
 import { AuthService } from "./auth.service";
-import { AuthDto } from "./dto";
+import { SigninDto, SignupDto } from "./dto";
+import { diskStorage } from 'multer'
+import { Param } from "@nestjs/common/decorators";
+import { GetUser } from "./decorator";
 
 @Controller('auth')
 export class AuthController {
@@ -10,13 +14,19 @@ export class AuthController {
     }
 
     @Post('signup')
-    signup(@Body() dto: AuthDto) {
+    signup(@Body() dto: SignupDto) {
         return this.authService.signup(dto)
     } 
 
     @HttpCode(HttpStatus.OK)
     @Post('signin')
-    signin(@Body() dto: AuthDto) {
+    signin(@Body() dto: SigninDto) {
         return this.authService.signin(dto)
     }
+
+    @Get('pictures/:filename')
+    async getPicture(@Param('filename') filename, @Res() res) {
+        res.sendFile(filename, { root: './uploads' })
+    }
+
 }

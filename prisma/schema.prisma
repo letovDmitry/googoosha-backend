@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,25 +15,116 @@ model User {
   email String @unique
   hash String
 
-  firstName String?
-  lastName String?
-  
-  bookmarks Bookmark[]
+  fullName String
+  phone String
+
+  city City @relation(fields: [cityName], references: [name])
+  cityName String @default("")
+
+  dateOfBirth String
+  pointOfDate String[]
+
+  familyStatus String?
+
+  info String?
+
+  avatar String?
+  gallery String[]
+
+  children Boolean
+  sex Boolean
+
+  vip Boolean? @default(false)
+
+  friends         User[] @relation("friends")
+  friendsRelation User[] @relation("friends")
+
+  guests         User[] @relation("guests")
+  guestsRelation User[] @relation("guests")
+
+  likesFrom         User[] @relation("likesFrom")
+  likesFromRelation User[] @relation("likesFrom")
+
+  sentMessages     Message[] @relation("sentMessages")
+  receivedMessages Message[] @relation("receivedMessages")
+
+  user1Chats Chat[] @relation("user1Chats")
+  user2Chats Chat[] @relation("user2Chats")
+
+  gifts Gift[]
+  notifications Notification[]
 
   @@map("users")
 }
 
-model Bookmark {
+model Gift {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title String
-  description String?
-  link String
+  img String
+  cost Int
 
+  users User[]
+
+  @@map("gifts")
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  img String
   userId Int
   user User @relation(fields: [userId], references: [id])
 
-  @@map("bookmarks")
+  @@map("notifications")
+}
+
+model City {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String @unique
+  users User[]
+
+  @@map("cities")
+}
+
+model Message {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sender     User   @relation(name: "sentMessages", fields: [senderId], references: [id])
+  receiver   User   @relation(name: "receivedMessages", fields: [receiverId], references: [id])
+
+  senderId Int
+  receiverId Int
+
+  chat Chat @relation(fields: [chatId], references: [id])
+  chatId Int
+
+  text String
+
+  @@map("messages")
+
+}
+
+model Chat {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user1 User   @relation(name: "user1Chats", fields: [user1Id], references: [id])
+  user2 User   @relation(name: "user2Chats", fields: [user2Id], references: [id])
+
+  messages Message[]
+
+  user1Id Int
+  user2Id Int
+
+  @@map("chats")
 }

@@ -8,6 +8,8 @@
   "scripts": {
     "build": "nest build",
     "prisma:dev:deploy": "prisma migrate deploy",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:reset": "prisma migrate reset",
     "db:dev:rm": "docker compose rm dev-db -s -f -v",
     "db:dev:up": "docker compose up dev-db -d",
     "db:dev:restart": "yarn db:dev:rm && db:dev:up && sleep 1 && yarn prisma:dev:deploy",
@@ -28,8 +30,11 @@
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.1",
+    "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/platform-socket.io": "9.1.6",
+    "@nestjs/websockets": "9.1.6",
     "@prisma/client": "^4.8.0",
     "argon2": "^0.30.2",
     "class-transformer": "^0.5.1",
@@ -37,7 +42,8 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "socket.io": "^4.6.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
