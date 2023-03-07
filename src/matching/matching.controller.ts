@@ -27,6 +27,11 @@ export class MatchingController {
   getGuests(@GetUser('id', ParseIntPipe) userId: number) {
     return this.matchingService.getGuests(userId)
   }
+
+  @Get('city')
+  getCities() {
+    return this.matchingService.getCities()
+  }
   
   @Get(':id')
   getUser(@GetUser('id', ParseIntPipe) userId: number, @Param('id', ParseIntPipe) userToFindId: number) {

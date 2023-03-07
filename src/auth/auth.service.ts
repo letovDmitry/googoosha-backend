@@ -14,6 +14,8 @@ export class AuthService {
     async signup(dto: SignupDto) {
         const hash = await argon.hash(dto.password)
 
+        console.log(dto)
+
         try {
             const user = await this.prisma.user.create({
                 data: {
@@ -38,6 +40,8 @@ export class AuthService {
                     children: dto.children,
                     sex: dto.sex,
                     hash,
+                    lat: dto.lat,
+                    lon: dto.lon,
                 }
             })
     

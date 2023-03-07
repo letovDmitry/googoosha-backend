@@ -23,9 +23,11 @@ export class AppGateway
  
  @SubscribeMessage('sendMessage')
  async handleSendMessage(client: Socket, payload: any): Promise<void> {
-    console.log(payload)
-   await this.messagesService.createMessage(payload.chatId, payload.senderId, payload.receiverId, payload.text);
-   this.server.emit('recMessage', payload);
+   const date = new Date()
+   const dateString =  `${date.getHours()}:${date.getMinutes()}`
+   console.log({...payload, time: dateString})
+   await this.messagesService.createMessage(payload.chatId, payload.senderId, payload.receiverId, payload.text, dateString);
+   this.server.emit('recMessage', {...payload, time: dateString});
  }
  
  afterInit(server: Server) {

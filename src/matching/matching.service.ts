@@ -2,12 +2,30 @@ import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from "src/prisma/prisma.service";
 
+function calcCrow(lat1: number, lon1: number, lat2: number, lon2: number) {
+    var R = 6371; 
+    var dLat = toRad(lat2-lat1);
+    var dLon = toRad(lon2-lon1);
+    var lat1 = toRad(lat1);
+    var lat2 = toRad(lat2);
+
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c;
+    return d;
+}
+
+function toRad(Value: number) {
+    return Value * Math.PI / 180;
+}
+
 @Injectable()
 export class MatchingService {
     constructor(private prisma: PrismaService) {}
  
     async findPair(userId: number, queryParams) {
-        const { sex, children, cityName, pointOfDate } = queryParams
+        const { sex, children, cityName, pointOfDate, distance, ageB = 0, ageT = 100 } = queryParams
 
         const user = await this.prisma.user.findUnique({
             where: {
@@ -27,14 +45,28 @@ export class MatchingService {
                         id: userId
                     },
     
-                    children: children ? children : {},
+                    children: children ? children == 'true' ? true : false : {},
                     sex: sex ? sex == 'true' ? true : false : {},
                     cityName: cityName ? cityName : {},
-                    pointOfDate: { hasEvery: pointOfDate }
-    
+                    pointOfDate: { hasEvery: pointOfDate },
+                    AND: [
+                        {
+                            age: {
+                                lte: parseInt(ageT)
+                            }
+                        },
+                        {
+                            age: {
+                                gte: parseInt(ageB)
+                            }
+                        }
+                    ]
                 }
             })
-            return users.filter(u => !userLikesFrom.includes(u.id) && !userLikesFromRelation.includes(u.id))
+
+            const userDistance = distance ? users.filter(u => calcCrow(parseFloat(u.lat), parseFloat(u.lon), parseFloat(user.lat), parseFloat(user.lon)) <= distance) : users
+
+            return userDistance.filter(u => !userLikesFrom.includes(u.id) && !userLikesFromRelation.includes(u.id))
         } else {
             const users = await this.prisma.user.findMany({
                 where: {
@@ -42,13 +74,27 @@ export class MatchingService {
                         id: userId
                     },
     
-                    children: children ? children : {},
+                    children: children ? children == 'true' ? true : false : {},
                     sex: sex ? sex == 'true' ? true : false : {},
                     cityName: cityName ? cityName : {},
+                    AND: [
+                        {
+                            age: {
+                                lte: parseInt(ageT)
+                            }
+                        },
+                        {
+                            age: {
+                                gte: parseInt(ageB)
+                            }
+                        }
+                    ]
                 }
             })
 
-            return users.filter(u => !userLikesFrom.includes(u.id) && !userLikesFromRelation.includes(u.id))
+            const userDistance = distance ? users.filter(u => calcCrow(parseFloat(u.lat), parseFloat(u.lon), parseFloat(user.lat), parseFloat(user.lon)) <= distance) : users
+
+            return userDistance.filter(u => !userLikesFrom.includes(u.id) && !userLikesFromRelation.includes(u.id))
         }
     }
 
@@ -223,5 +269,9 @@ export class MatchingService {
         })
 
         return user.guests
+    }
+
+    async getCities() {
+        return await this.prisma.city.findMany()
     }
 }

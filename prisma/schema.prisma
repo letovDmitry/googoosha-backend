@@ -21,6 +21,11 @@ model User {
   city City @relation(fields: [cityName], references: [name])
   cityName String @default("")
 
+  lat String @default("")
+  lon String @default("")
+
+  age Int @default(18)
+
   dateOfBirth String
   pointOfDate String[]
 
@@ -33,6 +38,8 @@ model User {
 
   children Boolean
   sex Boolean
+
+  balance Int @default(0)
 
   vip Boolean? @default(false)
 
@@ -64,6 +71,8 @@ model Gift {
 
   img String
   cost Int
+
+  name String
 
   users User[]
 
@@ -103,6 +112,8 @@ model Message {
 
   senderId Int
   receiverId Int
+
+  time String @default("")
 
   chat Chat @relation(fields: [chatId], references: [id])
   chatId Int

@@ -38,6 +38,14 @@ export class SignupDto {
     @IsNotEmpty()
     info: string
 
+    @IsString()
+    @IsNotEmpty()
+    lat: string
+
+    @IsString()
+    @IsNotEmpty()
+    lon: string
+
     @IsBoolean()
     @IsNotEmpty()
     children: boolean

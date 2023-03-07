@@ -63,7 +63,7 @@ export class MessagesService {
         return user.user1Chats.concat(user.user2Chats)
     }
 
-    async createMessage(chatId: number, senderId: number, receiverId: number, text: string) {
+    async createMessage(chatId: number, senderId: number, receiverId: number, text: string, time: string) {
         return await this.prisma.chat.update({
             where: {
                 id: chatId
@@ -81,7 +81,8 @@ export class MessagesService {
                                 connect: {
                                     id: receiverId
                                 }
-                            }   
+                            },
+                            time
                     }
                 }
             }
