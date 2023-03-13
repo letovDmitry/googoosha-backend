@@ -22,10 +22,6 @@ export class SignupDto {
     @IsNotEmpty()
     city: string
 
-    @IsString()
-    @IsNotEmpty()
-    dateOfBirth: string
-
     @IsArray()
     @IsNotEmpty()
     pointOfDate: string[]

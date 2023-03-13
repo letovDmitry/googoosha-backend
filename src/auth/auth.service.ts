@@ -32,7 +32,6 @@ export class AuthService {
                             }
                         }
                     },
-                    dateOfBirth: dto.dateOfBirth,
                     pointOfDate: dto.pointOfDate,
                     familyStatus: dto.familyStatus,
                     info: dto.info,

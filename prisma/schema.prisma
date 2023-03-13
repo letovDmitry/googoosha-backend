@@ -26,7 +26,6 @@ model User {
 
   age Int @default(18)
 
-  dateOfBirth String
   pointOfDate String[]
 
   familyStatus String?
